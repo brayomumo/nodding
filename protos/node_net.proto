@@ -1,0 +1,50 @@
+// .proto file for Node networking and RPC-ing
+
+syntax = "proto3";
+option go_package = "github.com/brayomumo/nodding/nodes/grpc/";
+
+
+service Node {
+    // this allows other nodes to connect to another node
+    rpc Invite(InviteGreeting) returns (InviteStatus){}
+
+    // This is meant to act as the heartbeat shared between nodes
+    rpc Heatbeat(stream Beat) returns (stream Beat){}
+
+    // This is meant to sync logs between nodes
+    rpc SyncLog(Log) returns (LogSyncStatus){}
+}
+
+// Message definitions
+// message type for a InviteGreeting in Invite rpc
+message InviteGreeting {
+    string inviteToken = 1;
+    string address = 2;
+    int64 timestamp = 3;
+}
+
+// InviteStatus type definition
+message InviteStatus {
+    InviteGreeting greeting = 1;
+    string status = 2;
+    int64 timestamp =3;
+}
+
+// Beat type definition
+message Beat {
+    string address = 1;
+    int64 timestamp = 2;
+}
+
+// Log type definition
+message Log {
+    string message = 1;
+    int64 timestamp = 2;
+
+}
+
+message LogSyncStatus{
+    Log log = 1;
+    string status = 2;
+    int64 timestamp = 3;
+}
